@@ -357,7 +357,7 @@ class GaeaDailyTask:
             # -------------------------------------------------------------------------- transfer ETH
             client_eth = float(self.client.eth) if isinstance(self.client.eth, str) else self.client.eth
             client_ethmax = 0.05
-            logger.debug(f"eth_balance: {eth_balance} client_eth: {client_eth} client_ethmax: {client_ethmax}")
+            logger.debug(f"eth_balance: {eth_balance:.6f} client_eth: {client_eth} client_ethmax: {client_ethmax}")
             if eth_balance < client_eth:
                 eth_balance_float = float(eth_balance) if isinstance(eth_balance, Decimal) else eth_balance
                 logger.debug(f"eth_balance_float: {eth_balance_float}")
@@ -369,14 +369,14 @@ class GaeaDailyTask:
                     result = await self.transfer_eth_clicker(eth_amount)
                     if result:
                         # 发送邮件
-                        send_mail(self.client.name, f"Name: {self.client.name}<br> Address: {address_link}<br> Balance: {eth_balance_float:.6f} < {client_eth} ETH<br> Transfer: {eth_amount/1000000000000000000:.3f} ETH")
+                        send_mail(self.client.name, f"Name: {self.client.name}<br> Address: {address_link}<br> Balance: {eth_balance_float:.3f} < {client_eth} ETH<br> Transfer: {eth_amount/1000000000000000000:.3f} ETH")
                     else:
                         raise Exception("transfer_eth_clicker failed")
             
             # -------------------------------------------------------------------------- transfer USDC
             client_usdc = float(self.client.usdc) if isinstance(self.client.usdc, str) else self.client.usdc
             client_usdcmax = float(self.client.usdcmax) if isinstance(self.client.usdcmax, str) else self.client.usdcmax
-            logger.debug(f"usdc_balance: {usdc_balance} client_usdc: {client_usdc} client_usdcmax: {client_usdcmax}")
+            logger.debug(f"usdc_balance: {usdc_balance:.2f} client_usdc: {client_usdc} client_usdcmax: {client_usdcmax}")
             if usdc_balance < client_usdc:
                 usdc_balance_float = float(usdc_balance) if isinstance(usdc_balance, Decimal) else usdc_balance
                 logger.debug(f"usdc_balance_float: {usdc_balance_float}")
@@ -388,7 +388,7 @@ class GaeaDailyTask:
                     result = await self.transfer_usdc_clicker(usd_amount)
                     if result:
                         # 发送邮件
-                        send_mail(self.client.name, f"Name: {self.client.name}<br> Address: {address_link}<br> Balance: {usdc_balance_float:.3f} < {client_usdc} USDC<br> Transfer: {usd_amount/1000000:.1f} USDC")
+                        send_mail(self.client.name, f"Name: {self.client.name}<br> Address: {address_link}<br> Balance: {usdc_balance_float:.1f} < {client_usdc} USDC<br> Transfer: {usd_amount/1000000:.1f} USDC")
                     else:
                         raise Exception("transfer_usdc_clicker failed")
             
