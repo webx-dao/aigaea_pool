@@ -52,12 +52,23 @@ async def limit_concurrency(semaphore, func, **kwargs):
         return await func(**kwargs)
 
 async def gaea_run_module_multiple_times(module, count, runname, id, name,address,type,eth,usdc,usdcmax, proxy):
-    result = await module(runname, id, name,address,type,eth,usdc,usdcmax, proxy)
-    logger.debug(f"id: {id} name: {name} address: {address} result: {result}")
-    
     delay = random.randint(5, 10)
     logger.debug(f"id: {id} name: {name} address: {address} account delay: {delay} seconds")
     await asyncio.sleep(delay)
+    
+    # 循环
+    while True:
+        # 开始执行当前任务
+        result = await module(runname, id, name,address,type,eth,usdc,usdcmax, proxy)
+        logger.debug(f"id: {id} name: {name} address: {address} result: {result}")
+        
+        if module == gaea_onchain_listen:
+            # 等待进入下一次
+            delay = random.randint(1800, 2400) # 30-40分钟循环
+            logger.info(f"id: {id} name: {name} address: {address} task delay: {delay} seconds")
+            await asyncio.sleep(delay)
+        else: # 不循环
+            break
 
 async def gaea_run_modules(module, runname, runeq, rungt, runlt, runthread):
     datas = get_data_for_token(runname)
@@ -77,7 +88,7 @@ async def gaea_run_modules(module, runname, runeq, rungt, runlt, runthread):
             continue
 
         parts = data.split(',')
-        if len(parts) < 6:
+        if len(parts) < 7:
             logger.error(f"Invalid data: ({len(parts)}){data}")
             continue
 

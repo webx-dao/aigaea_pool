@@ -332,7 +332,7 @@ class GaeaDailyTask:
     async def daily_onchain_balance(self):
         try:
             address = self.client.address
-            logger.info(f"id: {self.client.id} name: {self.client.name} address: {address}")
+            logger.debug(f"id: {self.client.id} name: {self.client.name} address: {address}")
             # -------------------------------------------------------------------------- balance eth/usdc
             eth_balance,usdc_balance = await self.get_account_balances()
             logger.debug(f"eth_balance: {eth_balance}, usdc_balance: {usdc_balance}")
@@ -347,7 +347,7 @@ class GaeaDailyTask:
         try:
             address = self.client.address
             address_link = f"<a href='{WEB3_EXPLORER}/address/{address}'>{address[:6]}***{address[-6:]}</a>"
-            logger.info(f"id: {self.client.id} name: {self.client.name} address: {address}")
+            logger.debug(f"id: {self.client.id} name: {self.client.name} address: {address}")
             # -------------------------------------------------------------------------- balance eth/usdc
             eth_balance,usdc_balance = await self.get_account_balances()
             # logger.debug(f"eth_balance: {eth_balance}, usdc_balance: {usdc_balance}")
