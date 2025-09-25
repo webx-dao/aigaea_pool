@@ -4,9 +4,9 @@ import time
 from loguru import logger
 from utils.helpers import get_data_for_token
 from src.functions import (
-    gaea_onchain_balance,
-    gaea_onchain_listen,
-    gaea_onchain_alltask
+    pool_onchain_balance,
+    pool_onchain_listen,
+    pool_onchain_alltask
 )
 
 class TaskManager:
@@ -48,10 +48,10 @@ class TaskManager:
                 time.sleep(60)
 
     async def launch_onchain_balance(self, thread: int, runid: int, module_name: str) -> None:
-        await self._launch_task(thread, runid, module_name, gaea_onchain_balance)
+        await self._launch_task(thread, runid, module_name, pool_onchain_balance)
 
     async def launch_onchain_listen(self, thread: int, runid: int, module_name: str) -> None:
-        await self._launch_task(thread, runid, module_name, gaea_onchain_listen)
+        await self._launch_task(thread, runid, module_name, pool_onchain_listen)
 
     async def launch_onchain_alltask(self, thread: int, runid: int, module_name: str) -> None:
-        await self._launch_task(thread, runid, module_name, gaea_onchain_alltask)
+        await self._launch_task(thread, runid, module_name, pool_onchain_alltask)

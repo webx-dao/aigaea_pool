@@ -3,7 +3,7 @@ import time
 import dns.resolver
 from loguru import logger
 
-from src.gaea_client import GaeaClient, getheaders, make_request
+from src.pool_client import PoolClient, getheaders, make_request
 from config import get_envsion, set_envsion
 
 def is_valid_ip(ip: str) -> bool:

@@ -14,15 +14,15 @@ from decimal import Decimal
 from loguru import logger
 from web3 import Web3
 
-from src.gaea_client import GaeaClient
+from src.pool_client import PoolClient
 from utils.contract_abi import contract_abi_usdc
 from utils.decorators import helper
 from utils.email import send_normal_mail, send_mail
 from config import get_envsion, set_envsion
 from config import WEB3_RPC, WEB3_RPC_FIXED, WEB3_EXPLORER, WEB3_CHAINID, CONTRACT_USDC, WEB3_SENDER_PRIKEY
 
-class GaeaDailyTask:
-    def __init__(self, client: GaeaClient) -> None:
+class PoolDailyTask:
+    def __init__(self, client: PoolClient) -> None:
         self.client = client
 
     # --------------------------------------------------------------------------

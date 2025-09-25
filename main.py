@@ -13,20 +13,19 @@ from questionary import Choice, select
 from termcolor import cprint
 
 from src.functions import (
-    gaea_onchain_balance, 
-    gaea_onchain_listen,
-    gaea_onchain_alltask
+    pool_onchain_balance, 
+    pool_onchain_listen,
+    pool_onchain_alltask
 )
-from src.gaea_client import GaeaClient
+from src.pool_client import PoolClient
 from src.task_manager import TaskManager
 from utils.helpers import get_data_for_token
 from config import get_envsion, set_envsion
 
 MODULE_MAPPING = {
-    'gaea_onchain_balance':  gaea_onchain_balance,
-    'gaea_onchain_listen':   gaea_onchain_listen,
-    'gaea_onchain_alltask':  gaea_onchain_alltask,
-    
+    'pool_onchain_balance':  pool_onchain_balance,
+    'pool_onchain_listen':   pool_onchain_listen,
+    'pool_onchain_alltask':  pool_onchain_alltask,
 }
 # 预编译正则表达式
 PASSWD_REGEX_PATTERN = r'^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).*$'
@@ -51,7 +50,7 @@ async def limit_concurrency(semaphore, func, **kwargs):
     async with semaphore:
         return await func(**kwargs)
 
-async def gaea_run_module_multiple_times(module, count, runname, id, name,address,type,eth,usdc,usdcmax, proxy):
+async def pool_run_module_multiple_times(module, count, runname, id, name,address,type,eth,usdc,usdcmax, proxy):
     delay = random.randint(5, 10)
     logger.debug(f"id: {id} name: {name} address: {address} account delay: {delay} seconds")
     await asyncio.sleep(delay)
@@ -62,7 +61,7 @@ async def gaea_run_module_multiple_times(module, count, runname, id, name,addres
         result = await module(runname, id, name,address,type,eth,usdc,usdcmax, proxy)
         logger.debug(f"id: {id} name: {name} address: {address} result: {result}")
         
-        if module == gaea_onchain_listen:
+        if module == pool_onchain_listen:
             # 等待进入下一次
             delay = random.randint(1800, 2400) # 30-40分钟循环
             logger.info(f"id: {id} name: {name} address: {address} task delay: {delay} seconds")
@@ -70,7 +69,7 @@ async def gaea_run_module_multiple_times(module, count, runname, id, name,addres
         else: # 不循环
             break
 
-async def gaea_run_modules(module, runname, runeq, rungt, runlt, runthread):
+async def pool_run_modules(module, runname, runeq, rungt, runlt, runthread):
     datas = get_data_for_token(runname)
     logger.info(f"runname: {runname} runeq: {runeq} rungt: {rungt} runlt: {runlt}")
 
@@ -100,11 +99,11 @@ async def gaea_run_modules(module, runname, runeq, rungt, runlt, runthread):
             continue
 
         count+=1
-        logger.debug(f"run task_id: {data_id} create gaea_run_modules task")
+        logger.debug(f"run task_id: {data_id} create pool_run_modules task")
         tasks.append(asyncio.create_task(
             limit_concurrency(
                 semaphore,
-                gaea_run_module_multiple_times,
+                pool_run_module_multiple_times,
                 module=module,
                 count=count,
                 runname=runname,
@@ -126,7 +125,7 @@ async def gaea_run_modules(module, runname, runeq, rungt, runlt, runthread):
         logger.error(f"Error occurred while running tasks: {e}")
 
 def run_module(module, runname, runeq, rungt, runlt, runthread):
-    asyncio.run(gaea_run_modules(module=module, runname=runname, runeq=runeq, rungt=rungt, runlt=runlt, runthread=runthread))
+    asyncio.run(pool_run_modules(module=module, runname=runname, runeq=runeq, rungt=rungt, runlt=runlt, runthread=runthread))
 
 def main(runname, runeq, rungt, runlt, runthread):
     try:
@@ -136,9 +135,9 @@ def main(runname, runeq, rungt, runlt, runthread):
             answer = select(
                 'Choose',
                 choices=[
-                    Choice("🔥 Gaea onchain tasks - balance",    'gaea_onchain_balance',  shortcut_key="1"),
-                    Choice("🚀 Gaea onchain tasks - listen",     'gaea_onchain_listen',   shortcut_key="2"),
-                    Choice("🚀 Gaea onchain tasks - alltask",    'gaea_onchain_alltask',  shortcut_key="3"),
+                    Choice("🔥 Pool onchain tasks - balance",    'pool_onchain_balance',  shortcut_key="1"),
+                    Choice("🚀 Pool onchain tasks - listen",     'pool_onchain_listen',   shortcut_key="2"),
+                    Choice("🚀 Pool onchain tasks - alltask",    'pool_onchain_alltask',  shortcut_key="3"),
                     Choice('❌ Exit', "exit", shortcut_key="0")
                 ],
                 use_shortcuts=True,
@@ -157,11 +156,11 @@ def main(runname, runeq, rungt, runlt, runthread):
 
 # ----------------------------------------------------------------------------------------------------------
 
-async def gaea_daily_task_modules(module, runname, runeq, runthread):
+async def pool_daily_task_modules(module, runname, runeq, runthread):
     module_mapping = {
-        gaea_onchain_balance:  "launch_onchain_balance",
-        gaea_onchain_listen:   "launch_onchain_listen",
-        gaea_onchain_alltask:  "launch_onchain_alltask",
+        pool_onchain_balance:  "launch_onchain_balance",
+        pool_onchain_listen:   "launch_onchain_listen",
+        pool_onchain_alltask:  "launch_onchain_alltask",
     }
     module_name = module_mapping.get(module, "none")
 
@@ -188,7 +187,7 @@ async def gaea_daily_task_modules(module, runname, runeq, runthread):
 
 def daily_task_module():
     logger.info("Execute alltask scheduled task...")
-    asyncio.run(gaea_daily_task_modules(module=gaea_onchain_alltask, runname=run_name, runeq=run_eq, runthread=run_thread))
+    asyncio.run(pool_daily_task_modules(module=pool_onchain_alltask, runname=run_name, runeq=run_eq, runthread=run_thread))
 
 def main_task(run_hour: int):
     # 获取当前时间

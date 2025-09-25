@@ -44,7 +44,7 @@ def send_email(to_email, subject, context):
             message = MIMEText(context, "html", 'utf-8')
             # 设置邮件头
             message['Subject'] = Header(subject, 'utf-8')
-            message['From'] = f"GAEA Mail Service <{from_email}>"    # 设置发送者信息
+            message['From'] = f"Mail Service <{from_email}>"    # 设置发送者信息
             # message['From'] = from_email  #Header(from_addr, 'utf-8')
             message['To'] = to_email      #Header(to_email, 'utf-8')
 
@@ -77,7 +77,7 @@ def send_email(to_email, subject, context):
             logger.error(f"{subject} {from_email} => {to_email} Email sent failed: {e}")
             return {"code": 200, "success": False, "msg": f"ERROR: Email sent failed: {e}"}
         except Exception as e:
-            if str(e).find('sending limit') > 0:  # User coeus@aigaea.net has exceeded its 24-hour sending limit. Messages to 500 recipients out of 500 allowed have been sent. Relay quota will reset in 18.49 hours.
+            if str(e).find('sending limit') > 0:  # User xxx@xxx.com has exceeded its 24-hour sending limit. Messages to 500 recipients out of 500 allowed have been sent. Relay quota will reset in 18.49 hours.
                 # 发送失败添加到发件人黑名单
                 logger.info(f"{today} Add sender to blacklist: {from_email} {e}")
                 if str(EMAIL_BLACKLIST).find(today) > 0:
@@ -99,7 +99,7 @@ def send_email(to_email, subject, context):
                     values = [from_email]
                     EMAIL_BLACKLIST[today] = values
                 logger.debug(f"EMAIL_BLACKLIST: {EMAIL_BLACKLIST}")
-            elif str(e).find('exceeded allowed number') > 0:  # Domain aigaea.net has exceeded allowed number of recipients for the current time period
+            elif str(e).find('exceeded allowed number') > 0:  # Domain xxx.com has exceeded allowed number of recipients for the current time period
                 # 发送失败添加到发件人黑名单
                 logger.info(f"{today} Add sender to blacklist: {from_email} {e}")
                 if str(EMAIL_BLACKLIST).find(today) > 0:

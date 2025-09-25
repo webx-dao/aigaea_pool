@@ -10,7 +10,7 @@ from aiohttp import ClientSession
 from aiohttp_socks import ProxyConnector
 from jose import jwt
 
-class GaeaClient:
+class PoolClient:
     def __init__(self, runname: str, id: str, name: str, address: str, type:str, eth: float, usdc: float, usdcmax: float, proxy: str) -> None:
         self.runname = runname
         self.id = id
@@ -122,8 +122,8 @@ def getheaders():
         "Accept-Language": "en,zh-CN;q=0.9,zh;q=0.8,en-US;q=0.7",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Origin": "https://app.gaea.la",
-        "Referer": "https://app.gaea.la/",
+        "Origin": "https://app.xxx.com",
+        "Referer": "https://app.xxx.com/",
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-site",

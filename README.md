@@ -1,4 +1,4 @@
-# AIGAEA Pool Robot
+# Pool Robot
 
 ## accout
 `data/token.txt` - name,address,type,eth,usdc,usdcmax,proxy
