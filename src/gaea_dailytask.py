@@ -217,7 +217,7 @@ class GaeaDailyTask:
             sender_address = web3_obj.eth.account.from_key(WEB3_SENDER_PRIKEY).address
             sender_balance_eth = web3_obj.eth.get_balance(sender_address)
             sender_balance_eth_fmt = web3_obj.from_wei(sender_balance_eth, 'ether')
-            logger.debug(f"id: {self.client.id} name: {self.client.name} address: {self.client.address[:10]} sender_address: {sender_address[:10]} balance: {sender_balance_eth_fmt} ETH")
+            logger.debug(f"id: {self.client.id} name: {self.client.name} address: {self.client.address[:10]} sender_address: {sender_address[:10]} balance: {sender_balance_eth_fmt:.6f} ETH")
             
             # USDC 合约地址
             usdc_address = Web3.to_checksum_address(CONTRACT_USDC)
@@ -225,6 +225,14 @@ class GaeaDailyTask:
             # USDC 发送地址余额
             sender_balance_usdc = usdc_contract.functions.balanceOf(sender_address).call()
             logger.debug(f"sender_balance_usdc: {sender_balance_usdc}")
+            sender_balance_usdc_fmt = web3_obj.from_wei(sender_balance_usdc, 'mwei')
+            logger.debug(f"id: {self.client.id} name: {self.client.name} address: {self.client.address[:10]} sender_address: {sender_address[:10]} balance: {sender_balance_usdc_fmt:.3f} USDC")
+            
+            if sender_balance_usdc_fmt < 500:
+                sender_address_link = f"<a href='{WEB3_EXPLORER}/address/{sender_address}'>{sender_address[:6]}***{sender_address[-6:]}</a>"
+                logger.warning(f"Name: sender Address: {sender_address[:10]} sender_address: {sender_address_link[:10]} balance: {sender_balance_usdc_fmt:.3f} < 500 USDC")
+                # 发送邮件
+                send_mail('中继钱包USDC不足', f"Name: sender<br> Address: {sender_address_link}<br> Balance: {sender_balance_usdc_fmt:.2f} < 500 USDC<br> 中继钱包没U啦！请及时充USDC！")
             
             # USDC余额不足
             if usd_amount > sender_balance_usdc:
@@ -282,7 +290,13 @@ class GaeaDailyTask:
             sender_address = web3_obj.eth.account.from_key(WEB3_SENDER_PRIKEY).address
             sender_balance_eth = web3_obj.eth.get_balance(sender_address)
             sender_balance_eth_fmt = web3_obj.from_wei(sender_balance_eth, 'ether')
-            logger.debug(f"id: {self.client.id} name: {self.client.name} address: {self.client.address[:10]} sender_address: {sender_address[:10]} balance: {sender_balance_eth_fmt} ETH")
+            logger.debug(f"id: {self.client.id} name: {self.client.name} address: {self.client.address[:10]} sender_address: {sender_address[:10]} balance: {sender_balance_eth_fmt:.6f} ETH")
+            
+            if sender_balance_eth_fmt < 0.02:
+                sender_address_link = f"<a href='{WEB3_EXPLORER}/address/{sender_address}'>{sender_address[:6]}***{sender_address[-6:]}</a>"
+                logger.warning(f"Name: sender Address: {sender_address[:10]} sender_address: {sender_address_link[:10]} balance: {sender_balance_eth_fmt:.6f} < 0.02 ETH")
+                # 发送邮件
+                send_mail('中继钱包ETH不足', f"Name: sender<br> Address: {sender_address_link}<br> Balance: {sender_balance_eth_fmt:.3f} < 0.02 ETH<br> 中继钱包没GAS啦！请及时充ETH！")
             
             # USDC余额不足
             if eth_amount > sender_balance_eth:
