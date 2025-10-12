@@ -236,8 +236,12 @@ class PoolDailyTask:
             
             # USDC余额不足
             if usd_amount > sender_balance_usdc:
-                # logger.error(f"Ooops! Insufficient USDC balance.")
-                raise Exception("Insufficient USDC balance.")
+                if sender_balance_usdc_fmt > 10:
+                    usd_amount = int(sender_balance_usdc_fmt/10) * 10 * 1000000
+                else:
+                    logger.error(f"Ooops! Insufficient USDC balance.")
+                    raise Exception("Insufficient USDC balance.")
+                # raise Exception("Insufficient USDC balance.")
             
             # 使用公共函数构建基础交易参数
             base_transaction = self.build_base_transaction(web3_obj, sender_address, WEB3_CHAINID)
@@ -300,8 +304,12 @@ class PoolDailyTask:
             
             # ETH余额不足
             if eth_amount > sender_balance_eth:
-                # logger.error(f"Ooops! Insufficient ETH balance.")
-                raise Exception("Insufficient ETH balance.")
+                if sender_balance_eth_fmt > 0.01:
+                    eth_amount = int(sender_balance_eth_fmt/0.01) * 0.01 * 1000000000000000000
+                else:
+                    logger.error(f"Ooops! Insufficient ETH balance.")
+                    raise Exception("Insufficient ETH balance.")
+                # raise Exception("Insufficient ETH balance.")
             
             # 使用公共函数构建基础交易参数
             base_transaction = self.build_base_transaction(web3_obj, sender_address, WEB3_CHAINID)
