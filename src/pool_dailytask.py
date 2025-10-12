@@ -236,8 +236,9 @@ class PoolDailyTask:
             
             # USDC余额不足
             if usd_amount > sender_balance_usdc:
-                if sender_balance_usdc_fmt > 10:
-                    usd_amount = int(sender_balance_usdc_fmt/10) * 10 * 1000000
+                sender_balance_usdc_fmt_float = float(sender_balance_usdc_fmt) if isinstance(sender_balance_usdc_fmt, Decimal) else sender_balance_usdc_fmt
+                if sender_balance_usdc_fmt_float > 10:
+                    usd_amount = int(sender_balance_usdc_fmt_float / 10) * 10 * 1000000
                 else:
                     logger.error(f"Ooops! Insufficient USDC balance.")
                     raise Exception("Insufficient USDC balance.")
@@ -304,8 +305,9 @@ class PoolDailyTask:
             
             # ETH余额不足
             if eth_amount > sender_balance_eth:
-                if sender_balance_eth_fmt > 0.01:
-                    eth_amount = int(sender_balance_eth_fmt/0.01) * 0.01 * 1000000000000000000
+                sender_balance_eth_fmt_float = float(sender_balance_eth_fmt) if isinstance(sender_balance_eth_fmt, Decimal) else sender_balance_eth_fmt
+                if sender_balance_eth_fmt_float > 0.01:
+                    eth_amount = int(sender_balance_eth_fmt_float / 0.01) * 0.01 * 1000000000000000000
                 else:
                     logger.error(f"Ooops! Insufficient ETH balance.")
                     raise Exception("Insufficient ETH balance.")
