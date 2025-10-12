@@ -298,10 +298,10 @@ class PoolDailyTask:
                 # 发送邮件
                 send_mail('中继钱包ETH不足', f"Name: sender<br> Address: {sender_address_link}<br> Balance: {sender_balance_eth_fmt:.3f} < 0.02 ETH<br> 中继钱包没GAS啦！请及时充ETH！")
             
-            # USDC余额不足
+            # ETH余额不足
             if eth_amount > sender_balance_eth:
-                # logger.error(f"Ooops! Insufficient USDC balance.")
-                raise Exception("Insufficient USDC balance.")
+                # logger.error(f"Ooops! Insufficient ETH balance.")
+                raise Exception("Insufficient ETH balance.")
             
             # 使用公共函数构建基础交易参数
             base_transaction = self.build_base_transaction(web3_obj, sender_address, WEB3_CHAINID)
@@ -385,7 +385,8 @@ class PoolDailyTask:
                         # 发送邮件
                         send_mail(self.client.name, f"Name: {self.client.name}<br> Address: {address_link}<br> Balance: {eth_balance_float:.3f} < {client_eth} ETH<br> Transfer: {eth_amount/1000000000000000000:.3f} ETH")
                     else:
-                        raise Exception("transfer_eth_clicker failed")
+                        # raise Exception("transfer_eth_clicker failed")
+                        logger.error(f"id: {self.client.id} name: {self.client.name} address: {address[:10]} daily_onchain_listen transfer_eth_clicker failed")
             
             # -------------------------------------------------------------------------- transfer USDC
             client_usdc = float(self.client.usdc) if isinstance(self.client.usdc, str) else self.client.usdc
@@ -404,7 +405,8 @@ class PoolDailyTask:
                         # 发送邮件
                         send_mail(self.client.name, f"Name: {self.client.name}<br> Address: {address_link}<br> Balance: {usdc_balance_float:.1f} < {client_usdc} USDC<br> Transfer: {usd_amount/1000000:.1f} USDC")
                     else:
-                        raise Exception("transfer_usdc_clicker failed")
+                        # raise Exception("transfer_usdc_clicker failed")
+                        logger.error(f"id: {self.client.id} name: {self.client.name} address: {address[:10]} daily_onchain_listen transfer_usdc_clicker failed")
             
             return "SUCCESS"
         except Exception as error:

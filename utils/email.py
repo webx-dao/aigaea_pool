@@ -140,7 +140,8 @@ def send_ses(to_email: str, subject: str, body_text: str, body_html: str):
 
     # Add subject, from and to lines.
     msg['Subject'] = SUBJECT 
-    msg['From'] = SENDER 
+    msg['From'] = f"Mail Service <{SENDER}>"    # 设置发送者信息
+    # msg['From'] = SENDER 
     msg['To'] = RECIPIENT
 
     # Create a multipart/alternative child container.
